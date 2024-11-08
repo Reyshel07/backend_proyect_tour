@@ -4,5 +4,16 @@
     "express": "^4.21.1",
     "pg": "^8.13.1",
     "pg-promise": "^11.10.1"
-  }
+  },
+  "name": "backend_proyect_tour",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
