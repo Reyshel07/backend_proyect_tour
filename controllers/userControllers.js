@@ -1,4 +1,6 @@
 const User = require('../models/userModel');
+const jwt = require('jsonwebtoken');
+const keys = require('../config/Keys');
 
 module.exports = {
     async getAll(req, res, next){
@@ -42,6 +44,7 @@ module.exports = {
             const password = req.body.password;
 
             const myUser = await User.findUserByEmail(email);
+            //const roles = await User.roles(id);
 
             if (!myUser) {
                 return res.status(401).json({
@@ -49,6 +52,23 @@ module.exports = {
                     message: 'El email no fue encontrado'
                 })
             }
+           /* if (roles.length > 1) {
+                return res.json({
+                    message: 'Seleccion un rol',
+                    roles: roles
+                });
+            }
+
+            const rol = roles[0].rol;
+            const empresaID = roles[0].id_empresa;
+            const empresaNombre = roles[0].empresa_nombre;*/
+
+            /*res.json({
+                message: 'Inicio de sesion exitoso',
+                rol: rol,
+                idempresa: empresaID,
+                empresaNombre: empresaNombre || null
+            })*/
 
             if(User.isPasswordMatched(password, myUser.password)){
                 const token = jwt.sign({id: myUser.id, email: myUser.email}, keys.secretOrKey, {
@@ -56,12 +76,14 @@ module.exports = {
                     // expiresIn: (60*5) // 5 min
                 });
 
-                const data = {
+                const data = {myUser,
                     id: myUser.id,
                     name: myUser.name,
                     email: myUser.email,
                     session_token: `JWT ${token}`
                 }
+                User.actualizarToken(myUser.id, `JWT ${token}`);
+                console.log(data);
 
                 return res.status(201).json({
                     succes: true,
@@ -129,7 +151,7 @@ module.exports = {
                 });
             }
         } catch (error) {
-            return res.status(404).json({
+            return res.status(500).json({
                 success: false,
                 message: 'Error al actualizar los datos'
             });

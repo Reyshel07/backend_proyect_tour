@@ -1,21 +1,23 @@
-
 const userControllers = require('../controllers/userControllers');
+const db = require('../config/config');
+const passport =('passport');
+
 
 module.exports = (app) => {
 
-    app.get('/api/users/getAll', userControllers.getAll);
+    //app.get('/api/users/getAll',passport.authenticate('jwt', {session: false}), userControllers.getAll);
 
     app.post('/api/users/create',userControllers.register);
 
     app.put('/api/users/update/:id', userControllers.update);
 
-    app.post('/api/login/LoginByEmail', userControllers.login);
+    app.post('/api/users/LoginByEmail', userControllers.login);
 
-    app.post('/api/tour/Tour', userControllers.tourController);
+    app.post('/api/users/Tour', userControllers.tourController);
 
-    app.post('/api/users/loginInicial', userControllers.loginEmail );
+    //app.post('/api/users/loginInicial', userControllers );
 
-    app.post('/api/users/login10', async (req, res) => {
+    /*app.post('/api/users/login10', async (req, res) => {
         const {correo, contraseña} = req.body;
 
         try {
@@ -65,6 +67,6 @@ module.exports = (app) => {
                 error: "error en el servidor"
             })
         }
-    })
+    })*/
 
 }

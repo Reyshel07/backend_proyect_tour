@@ -1,3 +1,3 @@
 module.exports = {
-    secretOrkey: 'zKJJ~]q(^iwqyS.)Tb!=XV7N[S$Xp%e_lYRKcHalm~=F;!A8q`4i..pzfibjJpD'
+    secretOrKey: 'Nqa.5o@u|1rOKP$u(0-I&<kF-I}t*b{}yR<KVeR.UA=LSSvI~w1;b&S9C^F.nMR'
 }

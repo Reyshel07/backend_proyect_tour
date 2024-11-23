@@ -1,5 +1,6 @@
 const db = require('../config/config');
 const User = {};
+const crypto = require('crypto');
 
 //conecta con la base de datos , sentencias sql
 User.getAll = () =>{
@@ -13,7 +14,7 @@ User.getAll = () =>{
 }
 User.findUserById = (id, callback) => {
     const sql =  `
-    SELECT id, id_rol, name, email, tipo_login, fecha_creacion, password
+    SELECT id, name, email, tipo_login, nrotelefono, password
     FROM usuarios
     WHERE id = $1;
     `;
@@ -28,33 +29,49 @@ User.create = (user) => {
     INSERT INTO 
     usuarios(
        email,
-       id_rol,
        name,
        password,
        tipo_login,
-       fecha_creacion
+       nrotelefono
     )
-    VALUES($1, $2, $3, $4, $5, $6) RETURNING id
+    VALUES($1, $2, $3, $4, $5) RETURNING id
     `;
 
     return db.oneOrNone(sql, [
         user.email,
-        user.id_rol,
         user.name,
         user.password,
         user.tipo_login,
-        new Date()
+        user.nrotelefono
     ]);
 }
 
 User.findUserByEmail = (email) => {
     const sql = `
-    SELECT id, id_rol, name, email, tipo_login, password, session_token
+    SELECT id, name, email, tipo_login, password, nrotelefono, session_token
     FROM usuarios
     WHERE email = $1;
     `;
 
     return db.oneOrNone(sql, [email]);
+}
+User.actualizarToken = (id, token) => {
+    const sql = `
+    update usuarios set session_token =$2
+    where id = $1
+    `;
+    return db.none(sql,[id, token]);
+} 
+User.roles = (id) => {
+    const sql = 
+    `SELECT r.nombre as rol, a.id, e.nombre as empresa_nombre
+    FROM user_has_rol ur
+    INNER JOIN rol r on ur.id_rol = r.id
+    LEFT JOIN administracion a on a.id_usuario  = ur.id_user  and a.id_rol = ur.id_rol 
+    LEFT JOIN empresa e on e.id = a.id_empresa 
+    WHERE ur.id_user = $1
+    `;
+    return db.oneOrNone(sql,[id]);
 }
 
 User.isPasswordMatched = (userPassword, hash) => {
